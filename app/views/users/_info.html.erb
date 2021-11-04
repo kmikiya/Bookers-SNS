@@ -21,6 +21,11 @@
       <% else %>
         <%= link_to "フォローする",  user_relationships_path(user), method: :post %>
       <% end %>
+         <% unless user.id == current_user.id %>
+           <% if (current_user.following?(user)) && (user.following?(current_user)) %>
+            <%= link_to 'chatを始める', room_path(user.id)%>
+           <% end %>
+         <% end %>
     </td>
   </tr>
 </table>
