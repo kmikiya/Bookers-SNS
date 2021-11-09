@@ -6,8 +6,7 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     @books = @user.books
     @book = Book.new
-    @rooms = Room.where(user_id: current_user)
-    @room = @rooms.find
+
   end
 
   def index
