@@ -1,13 +1,16 @@
 class BooksController < ApplicationController
   before_action :authenticate_user!
   before_action :ensure_correct_user, only: [:edit, :update, :destroy]
+  impressionist :actions=> [:index]
 
   def show
     @book = Book.find(params[:id])
     @book_comment = BookComment.new
+    impressionist(@book)
   end
 
   def index
+
     from  = Time.current.at_beginning_of_day
     to    = (from + 6.day).at_end_of_day
     @books = Book.includes(:favorited_users).sort {|a,b| b.favorited_users.size <=> a.favorited_users.size}
@@ -18,6 +21,7 @@ class BooksController < ApplicationController
      # }
     #@books = Book.all
     @book = Book.new
+    impressionist(@book, nil, unique: [:ip_address])
   end
 
   def create
