@@ -1,12 +1,12 @@
 class BooksController < ApplicationController
   before_action :authenticate_user!
   before_action :ensure_correct_user, only: [:edit, :update, :destroy]
-  impressionist :actions=> [:index]
+  impressionist :actions=> [:index, :show]
 
   def show
     @book = Book.find(params[:id])
     @book_comment = BookComment.new
-    impressionist(@book)
+    impressionist(@book, nil, unique: [:ip_address])
   end
 
   def index
@@ -21,7 +21,6 @@ class BooksController < ApplicationController
      # }
     #@books = Book.all
     @book = Book.new
-    impressionist(@book, nil, unique: [:ip_address])
   end
 
   def create
@@ -33,6 +32,7 @@ class BooksController < ApplicationController
       @books = Book.all
       render 'index'
     end
+    impressionist(@book)
   end
 
   def edit

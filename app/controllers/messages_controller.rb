@@ -7,17 +7,22 @@ class MessagesController < ApplicationController
   rooms = current_user.entries.pluck(:room_id)
   entries = Entry.find_by(user_id: @user.id, room_id: rooms)
 
-  if entries.nil?
-   @room = Room.new
-   @room.save
-   Entry.create(user_id: @user.id, room_id: @room.id)
-   Entry.create(user_id: current_user.id, room_id: @room.id)
-  else
-   @room = entries.room
-  end
+  if current_user.following?(@user) && @user.following?(current_user)
+    if entries.nil?
+     @room = Room.new
+     @room.save
+     Entry.create(user_id: @user.id, room_id: @room.id)
+     Entry.create(user_id: current_user.id, room_id: @room.id)
+    else
+     @room = entries.room
+    end
+
 
   @messages = @room.messages
   @message = Message.new(room_id: @room.id)
+ else
+  redirect_to user_path(@user)
+ end
  end
 
  def create
